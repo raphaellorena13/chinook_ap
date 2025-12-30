@@ -1,0 +1,90 @@
+version: 2
+
+models:
+  - name: stg_genre
+    description: "Tabela de gêneros"
+    columns:
+      - name: genre_id
+        tests:
+          - unique
+          - not_null
+      - name: name
+        tests:
+          - not_null
+          
+  - name: stg_customer
+    description: "Tabela de clientes"
+    columns:
+      - name: customer_id
+        description: "Chave primaria da tabela"
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_invoice
+    description: "Tabela de faturas"
+    columns:
+      - name: invoice_id
+        description: "Chave primaria da tabela"
+        tests:
+          - unique
+          - not_null
+      - name: customer_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_customer')
+                field: customer_id
+
+  - name: stg_invoiceline
+    description: "Tabela de linhas de fatura"
+    columns:
+      - name: invoice_line_id
+        tests:
+          - unique
+          - not_null
+      - name: invoice_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_invoice')
+                field: invoice_id
+      - name: track_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_track')
+                field: track_id
+
+  - name: stg_album
+    description: "Tabela de álbuns"
+    columns:
+      - name: album_id
+        tests:
+          - unique
+          - not_null
+      - name: artist_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_artist')
+                field: artist_id
+
+  - name: stg_track
+    description: "Tabela de faixas"
+    columns:
+      - name: track_id
+        tests:
+          - unique
+          - not_null
+      - name: album_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_album')
+                field: album_id

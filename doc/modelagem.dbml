@@ -1,0 +1,108 @@
+Table stg_genre {
+  genre_id integer [pk, not null, unique]
+  name varchar [not null]
+}
+
+Table stg_artist {
+  artist_id integer [pk, not null, unique]
+  name varchar
+}
+
+Table stg_album {
+  album_id integer [pk, not null, unique]
+  title varchar
+  artist_id integer [not null]
+}
+
+Table stg_customer {
+  customer_id integer [pk, not null, unique]
+  first_name varchar
+  last_name varchar
+  company varchar
+  address varchar
+  city varchar
+  state varchar
+  country varchar
+  postal_code varchar
+  phone varchar
+  fax varchar
+  email varchar
+  support_rep_id integer
+}
+
+Table stg_invoice {
+  invoice_id integer [pk, not null, unique]
+  customer_id integer [not null]
+  invoice_date timestamp
+  billing_address varchar
+  billing_city varchar
+  billing_state varchar
+  billing_country varchar
+  billing_postal_code varchar
+  total_amount numeric
+}
+
+Table stg_invoiceline {
+  invoice_line_id integer [pk, not null, unique]
+  invoice_id integer [not null]
+  track_id integer [not null]
+  unit_price numeric
+  quantity integer
+}
+
+Table stg_track {
+  track_id integer [pk, not null, unique]
+  name varchar
+  album_id integer [not null]
+  media_type_id integer
+  genre_id integer
+  composer varchar
+  milliseconds integer
+  bytes integer
+  unit_price numeric
+}
+
+Table dim_customer {
+  customer_id integer [pk]
+  first_name varchar
+  last_name varchar
+  email varchar
+  country varchar
+  city varchar
+  state varchar
+  company varchar
+}
+
+Table dim_track {
+  track_id integer [pk]
+  track_name varchar
+  genre_name varchar
+  artist_name varchar
+  album_title varchar
+  milliseconds integer
+  composer varchar
+}
+
+Table fct_sales {
+  invoice_line_id integer [pk]
+  invoice_id integer
+  customer_id integer
+  track_id integer
+  invoice_date timestamp
+  quantity integer
+  unit_price numeric
+  line_amount numeric
+}
+
+Ref: stg_album.artist_id > stg_artist.artist_id
+Ref: stg_invoice.customer_id > stg_customer.customer_id
+Ref: stg_invoiceline.invoice_id > stg_invoice.invoice_id
+Ref: stg_invoiceline.track_id > stg_track.track_id
+Ref: stg_track.album_id > stg_album.album_id
+
+Ref: dim_customer.customer_id > stg_customer.customer_id
+Ref: dim_track.track_id > stg_track.track_id
+Ref: fct_sales.invoice_line_id > stg_invoiceline.invoice_line_id
+Ref: fct_sales.invoice_id > stg_invoice.invoice_id
+Ref: fct_sales.customer_id > stg_customer.customer_id
+Ref: fct_sales.track_id > stg_track.track_id
