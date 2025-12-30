@@ -1,3 +1,3 @@
 ./venv
-./analytics/logs/
 ./analytics/target/
+./logs/
